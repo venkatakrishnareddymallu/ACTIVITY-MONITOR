@@ -1,2 +1,13 @@
-# ACTIVITY-MONITOR
-Dashboard that demonstrates the activity of FII and DII in the Indian capital markets.This is Application developed on top of open source visual analytics platform GRAMEX by Gramener
+# gramex-gallery
+
+## Setup
+
+- [Install Gramex 1.x](https://learn.gramener.com/guide/install/)
+- Clone this repository
+- Copy assets from shared repo, e.g. `demo.gramener.com:/deploy/<user>/<repo>/`
+- From the repo folder, run `gramex setup .`
+- From the repo folder, run `gramex`
+
+## Contributions
+
+- Author <user@example.org>

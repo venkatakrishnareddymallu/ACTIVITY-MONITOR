@@ -1,0 +1,104 @@
+/*  UI component styles. Customize via ?bootstrap-variable=encoded-value. Example:
+    Colors. Can be a name or a number (e.g. %23aabbcc). Preserve the hues below.
+      primary=blue
+      success=green
+      info=cyan
+      warning=orange
+      danger=red
+      secondary=grey
+      light=lightgrey
+      dark=darkgrey
+      body-bg=white
+      body-color=black
+    Fonts. Can be a system font or Open+Sans, Roboto, Lato, Anton, Monserrat
+      font-family-base=Segoe+UI
+      headings-font-family=Segoe+UI
+    Other
+      https://github.com/twbs/bootstrap/blob/v4-dev/scss/_variables.scss
+*/
+@import url("ui/bootstraptheme.css?body-bg=white&navbar-dark-color=rgba(255%2C255%2C255%2C.8)&navbar-dark-hover-color=white");
+/* For v4 icons, use url("ui/font-awesome/css/font-awesome.min.css") */
+@import url("ui/@fortawesome/fontawesome-free/css/all.min.css");
+
+
+/* custom styles for app: gramex-gallery */
+
+.right {
+  position: relative;
+  left: 0px;
+  width: 300px;
+  padding: 10px;
+  margin-left: inherit;
+}
+
+.all_sides{
+  width:350px;height:200px;
+  border: solid 1px #ebebeb;
+  background-color:#ebebeb;
+  box-shadow: 0 0 10px rgba(0,0,0,0);
+  -moz-box-shadow: 0 0 10px rgba(0,0,0,0);
+  -webkit-box-shadow: 0 0 10px rgba(0,0,0,0.2);
+  -o-box-shadow: 0 0 10px rgba(0,0,0,0.2);
+  }
+
+.purchase {
+  background-color: #0054c6 !important
+}
+
+.sold {
+  background-color: #2cb9ff !important
+}
+
+.fii_card{
+  width: 20rem;
+  height: 18rem;
+}
+
+.dii_card {
+  width: 20rem;
+  height: 18rem;
+}
+
+.fii_img {
+  height: 24px;
+  width: 24px;
+  margin-right: 4px;
+  float: left;
+}
+
+.dii_img{
+  height: 24px;
+  width: 24px;
+  margin-right: 4px;
+  float: left;
+}
+
+.dashboard {
+  height: 100%;
+  width: 100%;
+}
+
+.fii_p{
+  font-size: 20px;
+  color: #0054c6
+}
+
+.fii_s{
+  font-size: 20px;
+  color: #2cb9ff;
+}
+
+.dii_p{
+  font-size: 20px;
+  color: #0054c6
+}
+
+.dii_s{
+  font-size: 20px;
+  color: #2cb9ff;
+}
+
+.insight {
+  width: 930px;
+  height: 592px;
+}

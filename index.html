@@ -1,0 +1,122 @@
+{% autoescape None %}
+<!doctype html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  <title>gramex-gallery</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.css" />
+  <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css">
+</head>
+<body>
+  {% set base = '.' %}
+  {% include template-navbar.html %}
+  {% import json%}
+  {% from gramex.config import variables %}
+  <script type="text/html" id="components">
+  <div class="row dashboard">
+    <div class="col-3">
+      <div class="card all_sides pl-5 ml-5 mt-5 bg-white rounded border border-white fii_card">
+        <div class="card-body fii">
+          <img class="mt-3 fii_img" src='kpi.png'/><h6 class='mt-3 liketext'>FII Activity Average</h6>
+          <span class="font-weight-bold">Purchase:<i class="fa fa-inr font-weight-bold ml-5 mt-5 fii_p"> <%= data[0]['fii_purchase']%></i></span><br>
+          <span class="font-weight-bold ml-4">Sale:<i class="fa fa-inr font-weight-bold ml-5 mt-3 fii_s"><%= data[0]['fii_sales']%></i></span>
+          <span class="badge badge-primary pl-0 mt-3 ml-3 py-3 px-5 <%= data[0]['fii_net']>0?'purchase':'sold' %>"><%= data[0]['fii_net']%> Crores</span>
+        </div>
+      </div>
+      <div class="card pl-5 all_sides ml-5 mt-3 bg-white rounded border border-white dii_card">
+        <div class="card-body dii">
+          <img class="mt-3 dii_img" src='kpi.png'/><h6 class='mt-3 liketext'>DII Activity Average</h6>
+          <span class="font-weight-bold">Purchase:<i class="fa fa-inr font-weight-bold ml-5 mt-5 dii_p"> <%= data[1]['dii_purchase']%></i></span><br>
+          <span class="font-weight-bold ml-4">Sale:<i class="fa fa-inr font-weight-bold ml-5 mt-3 dii_s"><%= data[1]['dii_sales']%></i></span>
+          <span class="badge badge-primary pl-0 mt-3 ml-3 py-3 px-5 <%= data[1]['dii_net']>0?'purchase':'sold' %>"><%=data[1]['dii_net']%> Crores</span>
+        </div>
+      </div>
+    </div>
+    <div class="col-6">
+      <div class="card ml-5 all_sides mt-5 bg-white rounded border border-white insight">
+        <h6 class="mt-3 pl-5">Trend visual for the impact of FII and DII Activity on Index</h6>
+        <div class="card-body dii chart">
+          <!-- <img class="card-img-top pt-3" src="app.png" alt="Card image cap"> -->
+        </div>
+        <a class="card-text ml-5 mb-5 text_color" href="https://www.moneycontrol.com/stocks/marketstats/fii_dii_activity/index.php"><small class="text-muted">Data Source</small></a>
+      </div>
+    </div>
+  </div>
+</script>
+  <script type="text/javascript">
+    /* exported default_params, indicator_mapping, js_user, user_data, prof_dist */
+    var defaults = {{ json.dumps(variables) }}
+  </script>
+  <script src="ui/lodash/lodash.min.js"></script>
+  <script src="ui/jquery/dist/jquery.min.js"></script>
+  <script src="ui/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+  <script src="ui/g1/dist/g1.min.js"></script>
+  <script type="text/javascript" src="ui/moment/min/moment-with-locales.min.js"></script>
+  <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.min.js"></script>
+  <script src="ui/vega/build/vega.min.js"></script>
+  <script src="charts/chart.js"></script>
+
+</body>
+<script>
+  var url=g1.url.parse(location.href)
+  var end = url.searchKey['end'] || defaults.to
+  var start = url.searchKey['start'] || defaults.from
+  function url_update(uri) {
+      var clear_url = g1.url.parse(location.href).update(uri)
+      history.pushState({}, ' ', clear_url.toString());
+    }
+  url_update({'start': start, 'end': end})
+    $(function () {
+      $('input[name="daterange"]').daterangepicker({
+        opens: 'left'
+      }, function (start, end, label) {
+        url_update({ 'start': start.format('YYYY-MM-DD'), 'end': end.format('YYYY-MM-DD') })
+        render_dashboard(start.format('YYYY-MM-DD'),end.format('YYYY-MM-DD'))
+      })
+    })
+
+    function render_dashboard(start, end) {
+      params = {'Date>': start, 'Date<': end}
+      params = $.param(params, true)
+      $.ajax({
+        url: "fd_data?"+params
+      }).done(function (data) {
+        var kpi = [
+          {
+            "fii_purchase": _.round(_.meanBy(data.fii_dii, function(d) { return d['fii_purchase']}),2),
+            "fii_sales": _.round(_.meanBy(data.fii_dii, function(d) { return d['fii_sales']}),2),
+            "fii_net": _.round(_.meanBy(data.fii_dii, function(d) { return d['fii_net']}),2)
+          },
+          {
+            "dii_purchase": _.round(_.meanBy(data.fii_dii, function(d) { return d['DII Purchase']}),2),
+            "dii_sales": _.round(_.meanBy(data.fii_dii, function(d) { return d['DII Sales']}),2),
+            "dii_net": _.round(_.meanBy(data.fii_dii, function(d) { return d['DII Net']}),2)
+          }
+        ]
+        $('#components').on('template', function(){
+          render_visuals(data,'.chart')
+        }).template({data: kpi})
+      })
+    }
+    render_dashboard(start, end)
+
+    $('body')
+    .on('click', '.download', function () {
+    var url = g1.url.parse(location.href)
+    var param = {
+      'ext': 'pdf',
+      'url': location.href,
+      'selector': '.dashboard',
+      'delay': 1000
+    }
+    var capture_url = url.join('capture')
+      .update(param)
+    window.open(capture_url.toString(),'_self')
+  })
+
+</script>
+</html>
